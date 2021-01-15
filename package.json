@@ -2,8 +2,8 @@
     "name": "column-jump",
     "displayName": "Column Jump",
     "description": "Jump to the next non-empty row in the same column",
-    "version": "0.0.4",
-    "publisher": "CoenraadS",
+    "version": "0.0.6",
+    "publisher": "CodeCreator",
     "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.18.0"
@@ -43,7 +43,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/CoenraadS/column-jump"
+        "url": "https://github.com/CodeCreator/column-jump"
     },
-    "license": "SEE LICENSE IN LICENSE.md"
+    "license": "SEE LICENSE IN LICENSE.md",
+    "dependencies": {
+        "vsce": "^1.81.1"
+    }
 }

@@ -55,7 +55,6 @@ function jumpDown(selection: Selection, editor: TextEditor): Selection | undefin
 
 function isLineBlocking(line: TextLine, char: number): boolean {
     return (!line.isEmptyOrWhitespace &&
-        line.range.end.character >= char &&
         line.firstNonWhitespaceCharacterIndex <= char);
 }
 
