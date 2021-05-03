@@ -8,8 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!editor) { return; }
 
         editor.selections = editor.selections
-            .map(sel => jumpDown(sel, editor))
-            .filter(sel => !!sel);
+            .map(sel => jumpDown(sel, editor, false))
 
         scrollFirstSelectionIntoView(editor);
     }));
@@ -19,48 +18,66 @@ export function activate(context: vscode.ExtensionContext) {
         if (!editor) { return; }
 
         editor.selections = editor.selections
-            .map(sel => jumpUp(sel, editor))
-            .filter(sel => !!sel);
+            .map(sel => jumpUp(sel, editor, false))
+
+        scrollFirstSelectionIntoView(editor);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('column-jump.jumpSelectDown', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) { return; }
+
+        editor.selections = editor.selections
+            .map(sel => jumpDown(sel, editor, true))
+
+        scrollFirstSelectionIntoView(editor);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('column-jump.jumpSelectUp', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) { return; }
+
+        editor.selections = editor.selections
+            .map(sel => jumpUp(sel, editor, true))
 
         scrollFirstSelectionIntoView(editor);
     }));
 }
 
-function jumpUp(selection: Selection, editor: TextEditor): Selection | undefined {
+function jumpUp(selection: Selection, editor: TextEditor, select: boolean): Selection {
     const cursorPos = selection.active,
         char = cursorPos.character;
 
     for (let i = cursorPos.line - 1; i >= 0; i--) {
         if (isLineBlocking(editor.document.lineAt(i), char)) {
-            return makeSelection(i, char);
+            const newPos = new Position(i, char);
+            return new Selection(select ? selection.anchor : newPos, newPos);
         }
     }
 
-    return undefined;
+    const newPos = new Position(0, 0);
+    return new Selection(select ? selection.anchor : newPos, newPos);
 }
 
-function jumpDown(selection: Selection, editor: TextEditor): Selection | undefined {
+function jumpDown(selection: Selection, editor: TextEditor, select: boolean): Selection {
     const cursorPos = selection.active,
         lineCount = editor.document.lineCount,
         char = cursorPos.character;
 
     for (let i = cursorPos.line + 1; i < lineCount; i++) {
         if (isLineBlocking(editor.document.lineAt(i), char)) {
-            return makeSelection(i, char);
+            const newPos = new Position(i, char);
+            return new Selection(select ? selection.anchor : newPos, newPos);
         }
     }
 
-    return undefined;
+    const newPos = editor.document.lineAt(lineCount - 1).range.end;
+    return new Selection(select ? selection.anchor : newPos, newPos);
 }
 
 function isLineBlocking(line: TextLine, char: number): boolean {
     return (!line.isEmptyOrWhitespace &&
         line.firstNonWhitespaceCharacterIndex <= char);
-}
-
-function makeSelection(line: number, char: number): Selection {
-    const newPos = new Position(line, char);
-    return new Selection(newPos, newPos);
 }
 
 function scrollFirstSelectionIntoView(editor: TextEditor) {

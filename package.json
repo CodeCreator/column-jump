@@ -2,7 +2,7 @@
     "name": "column-jump",
     "displayName": "Column Jump",
     "description": "Jump to the next non-empty row in the same column",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "publisher": "CodeCreator",
     "icon": "images/icon.png",
     "engines": {
@@ -13,7 +13,9 @@
     ],
     "activationEvents": [
         "onCommand:column-jump.jumpUp",
-        "onCommand:column-jump.jumpDown"
+        "onCommand:column-jump.jumpDown",
+        "onCommand:column-jump.jumpSelectUp",
+        "onCommand:column-jump.jumpSelectDown"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -25,6 +27,13 @@
             {
                 "command": "column-jump.jumpDown",
                 "title": "Jump Down Column"
+            },            {
+                "command": "column-jump.jumpSelectUp",
+                "title": "Jump Select Up Column"
+            },
+            {
+                "command": "column-jump.jumpSelectDown",
+                "title": "Jump Select Down Column"
             }
         ]
     },
